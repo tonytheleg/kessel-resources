@@ -1,0 +1,43 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: kafka-connector-template
+objects:
+- apiVersion: kafka.strimzi.io/v1beta2
+  kind: KafkaConnector
+  metadata:
+    name: ${SERVICE_NAME}-debezium-connector
+    labels:
+      strimzi.io/cluster: ${KAFKA_CONNECT_INSTANCE}
+  spec:
+    class: io.debezium.connector.postgresql.PostgresConnector
+    tasksMax: ${{MAX_TASKS}}
+    config: <<<REPLACE_ME>>> # config section must be updated -- see README
+parameters:
+- name: SERVICE_NAME
+  description: Name of the service Debezium is leveraged for (used for naming and prefix's)
+  required: true
+- name: KAFKA_CONNECT_INSTANCE
+  description: Name of the target Kafka Connect instance for Connector
+  required: true
+- name: MAX_TASKS
+  description: How many tasks the Kafka Connect instance can create to process this Connector's work
+  value: "1"
+- name: DB_SECRET_NAME
+  description: Name of the secret that contains database credentials
+  required: true
+- name: TOPIC_HEARTBEAT_PREFIX
+  description: Prefix for the connector heartbeat topic
+  value: debezium-heartbeat
+- name: OUTBOX_TABLE_NAME
+  description: Name of the outbox table in Postgres (public.TABLE_NAME)
+  value: public.outbox_events
+- name: DEBEZIUM_HEARTBEAT_INTERVAL_MS
+  description: The interval for the Debezium heartbeat in ms
+  value: "300000"
+- name: DEBEZIUM_ACTION_QUERY
+  description: Query action that runs for each heartbeat event
+  value: "SELECT pg_logical_emit_message(false, 'heartbeat', now()::varchar);"
+- name: DEBEZIUM_POLL_INTERVAL_MS
+  description: The interval for the Debezium batch processing
+  value: "250"
