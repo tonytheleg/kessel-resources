@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	kessel "github.com/project-kessel/inventory-api/api/kessel/inventory/v1beta1/resources"
@@ -63,10 +62,16 @@ func main() {
 			fmt.Printf("Caught signal %v: terminating\n", sig)
 			run = false
 		default:
-			ev, err := c.ReadMessage(100 * time.Millisecond)
-			if err == nil {
-				fmt.Printf("Consumed event from topic %s: key = %-10s value = %s\n",
-					*ev.TopicPartition.Topic, string(ev.Key), string(ev.Value))
+			event := c.Poll(100)
+			if event == nil {
+				continue
+			}
+
+			switch e := event.(type) {
+			case *kafka.Message:
+				// some sort of header parsing
+
+				// process messages
 
 				// determine what request type to send to inventory.
 				request := kessel.CreateRhelHostRequest{RhelHost: &kessel.RhelHost{
@@ -84,17 +89,27 @@ func main() {
 					},
 				}}
 
-				// send out request
+				// send out request to inventory api
 				_, err = client.RhelHostServiceClient.CreateRhelHost(context.Background(), &request, opts...)
 				if err != nil {
 					fmt.Println(err)
 				}
 
-			} else if !err.(kafka.Error).IsTimeout() {
-				fmt.Printf("Consumer error: %v (%v)\n", err, ev)
+				fmt.Printf("consumed event from topic %s, partition %d at offset %s\n",
+					*e.TopicPartition.Topic, e.TopicPartition.Partition, e.TopicPartition.Offset)
+			case kafka.Error:
+				if e.IsFatal() {
+					run = false
+				} else {
+					fmt.Printf("recoverable consumer error: %v (%v)\n", e.Code(), e)
+					continue
+				}
+			case *kafka.Stats:
+				// collect metrics here
+			default:
+				fmt.Printf("event type ignored %v", e)
 			}
 		}
 	}
-
 	c.Close()
 }
