@@ -19,7 +19,7 @@ func main() {
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": "localhost:9092",
 		// "sasl.username":     "inventory-consumer",
-		// "sasl.password":     "",
+		// "sasl.password":     "<REPLACE-ME>",
 
 		// "security.protocol": "sasl_plaintext",
 		// "sasl.mechanisms":   "SCRAM-SHA-512",
@@ -68,7 +68,7 @@ func main() {
 				fmt.Printf("Consumed event from topic %s: key = %-10s value = %s\n",
 					*ev.TopicPartition.Topic, string(ev.Key), string(ev.Value))
 
-				// figure out what request to send to inventory.
+				// determine what request type to send to inventory.
 				request := kessel.CreateRhelHostRequest{RhelHost: &kessel.RhelHost{
 					Metadata: &kessel.Metadata{
 						ResourceType: "rhel-host",
@@ -84,6 +84,7 @@ func main() {
 					},
 				}}
 
+				// send out request
 				_, err = client.RhelHostServiceClient.CreateRhelHost(context.Background(), &request, opts...)
 				if err != nil {
 					fmt.Println(err)
