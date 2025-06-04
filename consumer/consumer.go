@@ -17,13 +17,15 @@ func main() {
 
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": "localhost:9092",
-		// "sasl.username":     "inventory-consumer",
-		// "sasl.password":     "<REPLACE-ME>",
-
-		// "security.protocol": "sasl_plaintext",
-		// "sasl.mechanisms":   "SCRAM-SHA-512",
-		"group.id":          "inventory-consumer",
+		"group.id":          "generic-consumer",
 		"auto.offset.reset": "earliest"})
+	// Below required for auth
+
+	// "sasl.username":     "inventory-consumer",
+	// "sasl.password":     "<REPLACE-ME>",
+
+	// "security.protocol": "sasl_plaintext",
+	// "sasl.mechanisms":   "SCRAM-SHA-512",
 
 	if err != nil {
 		fmt.Printf("failed to create consumer: %v", err)
@@ -97,6 +99,9 @@ func main() {
 
 				fmt.Printf("consumed event from topic %s, partition %d at offset %s\n",
 					*e.TopicPartition.Topic, e.TopicPartition.Partition, e.TopicPartition.Offset)
+				fmt.Printf("consumed event data: key = %-10s value = %s\n",
+					string(e.Key), string(e.Value))
+
 			case kafka.Error:
 				if e.IsFatal() {
 					run = false
