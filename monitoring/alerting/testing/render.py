@@ -3,7 +3,7 @@
 import yaml, argparse
 from jinja2 import Template
 
-parser = argparse.ArgumentParser(description='A simple argparse example.')
+parser = argparse.ArgumentParser()
 parser.add_argument('template_file', help='path to the template file to render')
 parser.add_argument('config_file', help='path to the config file containing variables to inject into template')
 args = parser.parse_args()

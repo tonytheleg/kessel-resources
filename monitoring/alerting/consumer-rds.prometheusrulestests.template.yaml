@@ -39,9 +39,9 @@ tests:
 - interval: 5m
   input_series:
   - series: aws_rds_transaction_logs_disk_usage_maximum{dbinstance_identifier="{{db_identifier}}"}
-    values: 0+67108860x12 # increases by 64GB every 5 mins --> 0.75GB per hour
+    values: 0+67108860x12 # increases by 64MB every 5 mins --> 0.75GB per hour
   - series: aws_rds_oldest_replication_slot_lag_maximum{dbinstance_identifier="{{db_identifier}}"}
-    values: 0+67108860x12 # increases by 64GB every 5 mins --> 0.75GB per hour
+    values: 0+67108860x12 # increases by 64MB every 5 mins --> 0.75GB per hour
 
   alert_rule_test:
   # No alert in the first 15 mins

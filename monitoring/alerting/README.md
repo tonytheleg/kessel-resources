@@ -13,6 +13,7 @@ The provided Prometheus Rule templates are a good starting place to monitor your
 2. Define the resource under `openshiftResources`, targeting the template and providing your variable values
 
 ```yaml
+# example
 ### My Service Name Consumer Alerts
 - provider: prometheus-rule
   type: resource-template
@@ -33,12 +34,14 @@ The provided Prometheus Rule templates are a good starting place to monitor your
 ```
 
 **RDS Alerts**:
-// TODO save for internal docs as this requires pointing to a specific App Interface cluster namespace and should not be public
-// process is the same as above just specific namespace file
-1. Locate the AppSRE clusters where Cloudwatch exporter lives
+
+// TODO this requires pointing to a specific App Interface cluster namespace and should not be public. Process is the same as above just specific namespace file
+1. Locate the AppSRE clusters' openshift-customer-monitoring Namespace file in App Interface where Cloudwatch exporter lives
 2. Define the resource under `openshiftResources`, targeting the template and providing your variable values
 
 ```yaml
+# example
+### My Service Name Consumer RDS Alerts
 - provider: prometheus-rule
   type: resource-template
   path: /TBD/PATH/TO/OUR/TEMPLATE/LOCATION
@@ -78,8 +81,8 @@ python3 -m venv venv && source venv/bin/activate && pip3 install -r requirements
 
 To test the Jinja templating itself:
 
-1. Test the template: `./render.py ../TEMPLATE_NAME.yaml ../CONFIG_NAME.yaml
+1. Test the template: `./render.py ../TEMPLATE_NAME.yaml ../CONFIG_NAME.yaml`
 
-2. Test the rules file: `./render.py ../TEMPLATE_TESTS_NAME.yaml ../CONFIG_NAME.yaml
+2. Test the rules file: `./render.py ../TEMPLATE_TESTS_NAME.yaml ../CONFIG_NAME.yaml`
 
 3. When done, deactivate the venv: `deactivate`
