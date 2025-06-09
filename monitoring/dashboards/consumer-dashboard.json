@@ -647,7 +647,7 @@
               "uid": "${datasource}"
             },
             "editorMode": "code",
-            "expr": "sum(rate(kessel_inventory_consumer_msgs_processed_total{job=\"{{JOB_NAME}}\"}[$__rate_interval]))",
+            "expr": "sum(rate(consumer_msgs_processed_total{job=\"{{JOB_NAME}}\"}[$__rate_interval]))",
             "instant": false,
             "legendFormat": "__auto",
             "range": true,
@@ -738,7 +738,7 @@
               "uid": "${datasource}"
             },
             "editorMode": "code",
-            "expr": "sum(rate(kessel_inventory_consumer_msg_process_failures_total{job=\"{{JOB_NAME}}\"}[$__rate_interval])) / sum(rate(kessel_inventory_consumer_msgs_processed_total{job=\"{{JOB_NAME}}\"}[$__rate_interval])) or sum(up{job=\"{{JOB_NAME}}\"}) * 0",
+            "expr": "sum(rate(consumer_msg_process_failures_total{job=\"{{JOB_NAME}}\"}[$__rate_interval])) / sum(rate(consumer_msgs_processed_total{job=\"{{JOB_NAME}}\"}[$__rate_interval])) or sum(up{job=\"{{JOB_NAME}}\"}) * 0",
             "format": "time_series",
             "instant": false,
             "legendFormat": "__auto",
@@ -832,7 +832,7 @@
               "uid": "${datasource}"
             },
             "editorMode": "code",
-            "expr": "sum(rate(kessel_inventory_consumer_consumer_errors_total{job=\"{{JOB_NAME}}\"}[$__rate_interval])) / sum(rate(kessel_inventory_consumer_msgs_processed_total{job=\"{{JOB_NAME}}\"}[$__rate_interval])) or sum(up{job=\"{{JOB_NAME}}\"}) * 0",
+            "expr": "sum(rate(consumer_errors_total{job=\"{{JOB_NAME}}\"}[$__rate_interval])) / sum(rate(consumer_msgs_processed_total{job=\"{{JOB_NAME}}\"}[$__rate_interval])) or sum(up{job=\"{{JOB_NAME}}\"}) * 0",
             "instant": false,
             "legendFormat": "__auto",
             "range": true,
@@ -901,7 +901,7 @@
               "uid": "${datasource}"
             },
             "editorMode": "code",
-            "expr": "kessel_inventory_consumer_kafka_error_events_total{job=\"{{JOB_NAME}}\"}",
+            "expr": "consumer_kafka_error_events_total{job=\"{{JOB_NAME}}\"}",
             "instant": false,
             "legendFormat": "__auto",
             "range": true,
@@ -935,7 +935,7 @@
                   "aggregations": [],
                   "operation": "groupby"
                 },
-                "kessel_inventory_consumer_kafka_error_events_total": {
+                "consumer_kafka_error_events_total": {
                   "aggregations": []
                 }
               }
@@ -1013,7 +1013,7 @@
               "uid": "${datasource}"
             },
             "editorMode": "code",
-            "expr": "sum(increase(kessel_inventory_outbox_event_writes_total{job=\"{{JOB_NAME}}\"}[$__range]))",
+            "expr": "sum(increase(outbox_event_writes_total{job=\"{{JOB_NAME}}\"}[$__range]))",
             "instant": false,
             "legendFormat": "__auto",
             "range": true,
@@ -1079,7 +1079,7 @@
               "uid": "${datasource}"
             },
             "editorMode": "code",
-            "expr": "sum(increase(kessel_inventory_consumer_msgs_processed_total{job=\"{{JOB_NAME}}\"}[$__range]))",
+            "expr": "sum(increase(consumer_msgs_processed_total{job=\"{{JOB_NAME}}\"}[$__range]))",
             "instant": false,
             "legendFormat": "__auto",
             "range": true,
@@ -1177,7 +1177,7 @@
               "uid": "${datasource}"
             },
             "editorMode": "code",
-            "expr": "sum(rate(kessel_inventory_outbox_event_writes_total{job=\"{{JOB_NAME}}\"}[3m])) - sum(rate(kessel_inventory_consumer_msgs_processed_total{job=\"{{JOB_NAME}}\"}[3m]))",
+            "expr": "sum(rate(outbox_event_writes_total{job=\"{{JOB_NAME}}\"}[3m])) - sum(rate(consumer_msgs_processed_total{job=\"{{JOB_NAME}}\"}[3m]))",
             "instant": false,
             "legendFormat": "__auto",
             "range": true,
