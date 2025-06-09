@@ -1,0 +1,10 @@
+# This is a sample config file to show the required values to set
+# Valuse should be updated to match your service and alerting desires
+service: kessel-inventory
+env: stage
+app_team: ciam-authz
+dashboard_link: https://test.com
+console_link: https://console.com/connector
+app_sop: https://sop.com
+severity: medium
+db_identifier: kessel-inventory-stage
