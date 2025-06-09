@@ -10,18 +10,18 @@ tests:
 # TransactionLogDiskSpaceUsageHigh
 - interval: 1m
   input_series:
-  - series: aws_rds_transaction_logs_disk_usage_maximum{dbinstance_identifier="{{db_identifier}}}
+  - series: aws_rds_transaction_logs_disk_usage_maximum{dbinstance_identifier="{{db_identifier}}"}
     values: 2000000000x3 55000000000x5 # usage below threshold for 3 minutes, over aftera another 3
 
   alert_rule_test:
   # No alert in the first 3 mins
   - eval_time: 3m
-    alertname: TransactionLogDiskSpaceUsageHigh
+    alertname: {{service}}_TransactionLogDiskSpaceUsageHigh
     exp_alerts: []
 
   # Alert after 7 min
   - eval_time: 7m
-    alertname: TransactionLogDiskSpaceUsageHigh
+    alertname: {{service}}_TransactionLogDiskSpaceUsageHigh
     exp_alerts:
     - exp_labels:
         severity: {{severity}}
@@ -32,26 +32,26 @@ tests:
       exp_annotations:
         dashboard: {{dashboard_link}}
         link_url: {{console_link}}
-        message: "{{service}} RDS - Transaction log disk usage is high, which could indicate unchecked WAL growth or replication slot issues"
+        message: "{{service}}/{{db_identifier}} RDS - Transaction log disk usage is high, which could indicate unchecked WAL growth or replication slot issues"
         runbook: {{app_sop}}
 
 # ReplicationSlotLagOrUsageAnomaly
 - interval: 5m
   input_series:
-  - series: aws_rds_transaction_logs_disk_usage_maximum{dbinstance_identifier="{{db_identifier}}}
+  - series: aws_rds_transaction_logs_disk_usage_maximum{dbinstance_identifier="{{db_identifier}}"}
     values: 0+67108860x12 # increases by 64GB every 5 mins --> 0.75GB per hour
-  - series: aws_rds_oldest_replication_slot_lag_maximum{dbinstance_identifier="{{db_identifier}}}
+  - series: aws_rds_oldest_replication_slot_lag_maximum{dbinstance_identifier="{{db_identifier}}"}
     values: 0+67108860x12 # increases by 64GB every 5 mins --> 0.75GB per hour
 
   alert_rule_test:
   # No alert in the first 15 mins
   - eval_time: 15m
-    alertname: ReplicationSlotLagOrUsageAnomaly
+    alertname: {{service}}_ReplicationSlotLagOrUsageAnomaly
     exp_alerts: []
 
   # Alert after 60 min (delta = 1.8GB)
   - eval_time: 60m
-    alertname: ReplicationSlotLagOrUsageAnomaly
+    alertname: {{service}}_ReplicationSlotLagOrUsageAnomaly
     exp_alerts:
     - exp_labels:
         severity: {{severity}}
@@ -62,5 +62,5 @@ tests:
       exp_annotations:
         dashboard: {{dashboard_link}}
         link_url: {{console_link}}
-        message: "{{service}} RDS - Replication Slot Lag and/or Transaction Log Disk usage has grown at an abnormal rate"
+        message: "{{service}}/{{db_identifier}} RDS - Replication Slot Lag and/or Transaction Log Disk usage has grown at an abnormal rate"
         runbook: {{app_sop}}

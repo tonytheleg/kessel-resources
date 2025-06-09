@@ -1,14 +1,15 @@
-# This is a sample config file to show the required values to set
-# Valuse should be updated to match your service and alerting desires
-service: kessel-inventory
-namespace: kessel-stage
-env: stage
-app_team: ciam-authz
-dashboard_link: https://test.com
-app_console_link: https://console.com/app
-connector_console_link: https://console.com/connector
-app_sop: https://sop.com
-outbox_topic: outbox.event.kessel.tuples
-severity: medium
-job_name: kessel-inventory-api
-connector: kessel-inventory-source-connector
+# This config file lists the required values to set in App Interface
+# It is used for testing changed in this repo only
+# Values should be updated to match your service and alerting desires
+service: <Name of the application service>
+namespace: <Namespace in cluster where service lives>
+env: <Env for alert (stage, prod, etc)>
+app_team: <App team name (correlates to Slack handle)>
+dashboard_link: <Link to RDS Dashboard in Grafana>
+app_console_link: <Link to App in Cluster Console>
+connector_console_link: <Link to Kafka Connect object in Cluster Console>
+app_sop: <Link to App SOP in App Interface or Runbooks link>
+severity: <Alert severity (set on all alerts)>
+outbox_topic: <Name of Kafka Topic used for outbox events>
+job_name: <kubernetes job name (matches ServiceMonitor name)>s
+connector: <Name of Kafka Connector CR configured for Debezium>

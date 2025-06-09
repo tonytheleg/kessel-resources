@@ -16,17 +16,17 @@ tests:
   alert_rule_test:
   # No alert in the first 5 mins
   - eval_time: 5m
-    alertname: {{service}}-DebeziumConnectorDown
+    alertname: {{service}}_DebeziumConnectorDown
     exp_alerts: []
 
   # Alert after 10 min (5 min with 0)
   - eval_time: 10m
-    alertname: {{service}}-DebeziumConnectorDown
+    alertname: {{service}}_DebeziumConnectorDown
     exp_alerts:
     - exp_labels:
         severity: {{severity}}
         service: {{service}}
-        connector: "kessel-inventory-source-connector"
+        connector: {{connector}}
         namespace: {{namespace}}
         env: {{env}}
         app_team: {{app_team}}
@@ -48,12 +48,12 @@ tests:
 
   # No alert in the first 5 minutes
   - eval_time: 5m
-    alertname: {{service}}-ConsumerProcessingFailures
+    alertname: {{service}}_ConsumerProcessingFailures
     exp_alerts: []
 
   # Alert after 15m
   - eval_time: 15m
-    alertname: {{service}}-ConsumerProcessingFailures
+    alertname: {{service}}_ConsumerProcessingFailures
     exp_alerts:
     - exp_labels:
         severity: {{severity}}
@@ -76,12 +76,12 @@ tests:
 
   # No alert in the first 5 minutes
   - eval_time: 5m
-    alertname: {{service}}-ConsumerErrors
+    alertname: {{service}}_ConsumerErrors
     exp_alerts: []
 
   # Alert after 15m
   - eval_time: 15m
-    alertname: {{service}}-ConsumerErrors
+    alertname: {{service}}_ConsumerErrors
     exp_alerts:
     - exp_labels:
         severity: {{severity}}
@@ -104,12 +104,12 @@ tests:
 
   # No alert in the first 5 minutes
   - eval_time: 5m
-    alertname: {{service}}-ConsumerKafkaErrors
+    alertname: {{service}}_ConsumerKafkaErrors
     exp_alerts: []
 
   # Alert after 15m
   - eval_time: 15m
-    alertname: {{service}}-ConsumerKafkaErrors
+    alertname: {{service}}_ConsumerKafkaErrors
     exp_alerts:
     - exp_labels:
         severity: {{severity}}
@@ -131,17 +131,17 @@ tests:
   alert_rule_test:
   # No alert in the first 5 mins
   - eval_time: 5m
-    alertname: {{service}}-ConsumerLagHigh
+    alertname: {{service}}_ConsumerLagHigh
     exp_alerts: []
 
   # Alert after 10 min (5 min with 0)
   - eval_time: 10m
-    alertname: {{service}}-ConsumerLagHigh
+    alertname: {{service}}_ConsumerLagHigh
     exp_alerts:
     - exp_labels:
         severity: {{severity}}
         service: {{service}}
-        topic: "outbox.event.kessel.tuples"
+        topic: {{outbox_topic}}
         namespace: {{namespace}}
         env: {{env}}
         app_team: {{app_team}}
@@ -162,12 +162,12 @@ tests:
   alert_rule_test:
   # No alert in the first 5 mins
   - eval_time: 5m
-    alertname: {{service}}-ConsumerEndToEndLagHigh
+    alertname: {{service}}_ConsumerEndToEndLagHigh
     exp_alerts: []
 
   # Alert after 10 min (5 min with 0)
   - eval_time: 10m
-    alertname: {{service}}-ConsumerEndToEndLagHigh
+    alertname: {{service}}_ConsumerEndToEndLagHigh
     exp_alerts:
     - exp_labels:
         severity: {{severity}}

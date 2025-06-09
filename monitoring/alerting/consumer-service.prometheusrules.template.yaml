@@ -10,7 +10,7 @@ spec:
   groups:
   - name:  {{ service ~ '-' ~ env ~ '-' ~ 'consumer-alerts' }}
     rules:
-    - alert: {{service}}-DebeziumConnectorDown
+    - alert: {{service}}_DebeziumConnectorDown
       expr: kafka_connect_connector_status{connector="{{connector}}"} == 0
       for: 3m
       labels:
@@ -25,7 +25,7 @@ spec:
         message: "{{service}} - Debezium source connector down for >3m"
         runbook: {{app_sop}}
 
-    - alert: {{service}}-ConsumerProcessingFailures
+    - alert: {{service}}_ConsumerProcessingFailures
       expr: |
         sum(rate(consumer_msg_process_failures_total{job="{{job_name}}"}[5m]))
         /
@@ -42,7 +42,7 @@ spec:
         message: "{{service}} consumer failure rate is above 10%"
         runbook: {{app_sop}}
 
-    - alert: {{service}}-ConsumerErrors
+    - alert: {{service}}_ConsumerErrors
       expr: |
         sum(rate(consumer_errors_total{job="{{job_name}}"}[5m])) > 0.1
       for: 3m
@@ -57,7 +57,7 @@ spec:
         message: "{{service}} high consumer error rate"
         runbook: {{app_sop}}
 
-    - alert: {{service}}-ConsumerKafkaErrors
+    - alert: {{service}}_ConsumerKafkaErrors
       expr: |
         sum(rate(consumer_kafka_error_events_total{job="{{job_name}}"}[5m])) > 0.1
       for: 3m
@@ -72,7 +72,7 @@ spec:
         message: "{{service}} consumer high kafka error rate"
         runbook: {{app_sop}}
 
-    - alert: {{service}}-ConsumerLagHigh
+    - alert: {{service}}_ConsumerLagHigh
       expr: kafka_consumergroup_group_topic_sum_lag{topic="{{outbox_topic}}"} > 40
       for: 5m
       labels:
@@ -87,7 +87,7 @@ spec:
         message: "{{service}} consumer lag > 40 messages"
         runbook: {{app_sop}}
 
-    - alert: {{service}}-ConsumerEndToEndLagHigh
+    - alert: {{service}}_ConsumerEndToEndLagHigh
       expr: sum(avg_over_time(outbox_event_writes_total{job="{{job_name}}"}[5m])) - sum(avg_over_time(consumer_msgs_processed_total{job="{{job_name}}"}[5m])) > 80
       for: 5m
       labels:

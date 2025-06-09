@@ -1,10 +1,11 @@
-# This is a sample config file to show the required values to set
-# Valuse should be updated to match your service and alerting desires
-service: kessel-inventory
-env: stage
-app_team: ciam-authz
-dashboard_link: https://test.com
-console_link: https://console.com/connector
-app_sop: https://sop.com
-severity: medium
-db_identifier: kessel-inventory-stage
+# This config file lists the required values to set in App Interface
+# It is used for testing changed in this repo only
+# Values should be updated to match your service and alerting desires
+service: <Name of the application service>
+env: <Env for alert (stage, prod, etc)>
+app_team: <App team name (correlates to Slack handle)>
+dashboard_link: <Link to RDS Dashboard in Grafana>
+console_link: <Link to App in Cluster Console>
+app_sop: <Link to App SOP in App Interface or Runbooks link>
+severity: <Alert severity (set on all alerts)>
+db_identifier: <Database instance identified>

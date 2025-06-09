@@ -11,7 +11,7 @@ spec:
   groups:
   - name: {{ service ~ '-' ~ env ~ '-' ~ 'consumer-rds-alerts' }}
     rules:
-    - alert: TransactionLogDiskSpaceUsageHigh
+    - alert: {{service}}_TransactionLogDiskSpaceUsageHigh
       expr: aws_rds_transaction_logs_disk_usage_maximum{dbinstance_identifier="{{db_identifier}}"} >= 54000000000 # 54GB ~= 3 days idle WAL growth
       for: 3m
       labels:
@@ -22,13 +22,13 @@ spec:
       annotations:
         dashboard: {{dashboard_link}}
         link_url: {{console_link}}
-        message: "{{service}} RDS - Transaction log disk usage is high, which could indicate unchecked WAL growth or replication slot issues"
+        message: "{{service}}/{{db_identifier}} RDS - Transaction log disk usage is high, which could indicate unchecked WAL growth or replication slot issues"
         runbook: {{app_sop}}
 
-    - alert: ReplicationSlotLagOrUsageAnomaly
-      expr: delta(aws_rds_transaction_logs_disk_usage_maximum{dbinstance_identifier="{{db_identifier}}[60m]) >= 700000000
+    - alert: {{service}}_ReplicationSlotLagOrUsageAnomaly
+      expr: delta(aws_rds_transaction_logs_disk_usage_maximum{dbinstance_identifier="{{db_identifier}}"}[60m]) >= 700000000
             or
-            delta(aws_rds_oldest_replication_slot_lag_maximum{dbinstance_identifier="{{db_identifier}}[60m]) >= 700000000 # 0.7GB per hour
+            delta(aws_rds_oldest_replication_slot_lag_maximum{dbinstance_identifier="{{db_identifier}}"}[60m]) >= 700000000 # 0.7GB per hour
       for: 5m
       labels:
         severity: {{severity}}
@@ -38,5 +38,5 @@ spec:
       annotations:
         dashboard: {{dashboard_link}}
         link_url: {{console_link}}
-        message: "{{service}} RDS - Replication Slot Lag and/or Transaction Log Disk usage has grown at an abnormal rate"
+        message: "{{service}}/{{db_identifier}} RDS - Replication Slot Lag and/or Transaction Log Disk usage has grown at an abnormal rate"
         runbook: {{app_sop}}
