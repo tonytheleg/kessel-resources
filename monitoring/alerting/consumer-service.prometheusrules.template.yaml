@@ -1,0 +1,103 @@
+$schema: /openshift/prometheus-rule-1.yml
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ service ~ '-' ~ env ~ '-' ~ 'consumer-alerts' }}
+  labels:
+    prometheus: app-sre
+    role: alert-rules
+spec:
+  groups:
+  - name:  {{ service ~ '-' ~ env ~ '-' ~ 'consumer-alerts' }}
+    rules:
+    - alert: {{service}}_DebeziumConnectorDown
+      expr: kafka_connect_connector_status{connector="{{connector}}"} == 0
+      for: 3m
+      labels:
+        severity: {{severity}}
+        service: {{service}}
+        namespace: {{namespace}}
+        env: {{env}}
+        app_team: {{app_team}}
+      annotations:
+        dashboard: {{dashboard_link}}
+        link_url: {{connector_console_link}}
+        message: "{{service}} - Debezium source connector down for >3m"
+        runbook: {{app_sop}}
+
+    - alert: {{service}}_ConsumerProcessingFailures
+      expr: |
+        sum(rate(consumer_msg_process_failures_total{job="{{job_name}}"}[5m]))
+        /
+        sum(rate(consumer_msgs_processed_total{job="{{job_name}}"}[5m])) > 0.1
+      for: 5m
+      labels:
+        severity: {{severity}}
+        service: {{service}}
+        env: {{env}}
+        app_team: {{app_team}}
+      annotations:
+        dashboard: {{dashboard_link}}
+        link_url: {{app_console_link}}
+        message: "{{service}} consumer failure rate is above 10%"
+        runbook: {{app_sop}}
+
+    - alert: {{service}}_ConsumerErrors
+      expr: |
+        sum(rate(consumer_errors_total{job="{{job_name}}"}[5m])) > 0.1
+      for: 3m
+      labels:
+        severity: {{severity}}
+        service: {{service}}
+        env: {{env}}
+        app_team: {{app_team}}
+      annotations:
+        dashboard: {{dashboard_link}}
+        link_url: {{app_console_link}}
+        message: "{{service}} high consumer error rate"
+        runbook: {{app_sop}}
+
+    - alert: {{service}}_ConsumerKafkaErrors
+      expr: |
+        sum(rate(consumer_kafka_error_events_total{job="{{job_name}}"}[5m])) > 0.1
+      for: 3m
+      labels:
+        severity: {{severity}}
+        service: {{service}}
+        env: {{env}}
+        app_team: {{app_team}}
+      annotations:
+        dashboard: {{dashboard_link}}
+        link_url: {{app_console_link}}
+        message: "{{service}} consumer high kafka error rate"
+        runbook: {{app_sop}}
+
+    - alert: {{service}}_ConsumerLagHigh
+      expr: kafka_consumergroup_group_topic_sum_lag{topic="{{outbox_topic}}"} > 40
+      for: 5m
+      labels:
+        severity: {{severity}}
+        service: {{service}}
+        namespace: {{namespace}}
+        env: {{env}}
+        app_team: {{app_team}}
+      annotations:
+        dashboard: {{dashboard_link}}
+        link_url: {{app_console_link}}
+        message: "{{service}} consumer lag > 40 messages"
+        runbook: {{app_sop}}
+
+    - alert: {{service}}_ConsumerEndToEndLagHigh
+      expr: sum(avg_over_time(outbox_event_writes_total{job="{{job_name}}"}[5m])) - sum(avg_over_time(consumer_msgs_processed_total{job="{{job_name}}"}[5m])) > 80
+      for: 5m
+      labels:
+        severity: {{severity}}
+        service: {{service}}
+        namespace: {{namespace}}
+        env: {{env}}
+        app_team: {{app_team}}
+      annotations:
+        dashboard: {{dashboard_link}}
+        link_url: {{app_console_link}}
+        message: "{{service}} lag between outbox writes and consumer message processing is high"
+        runbook: {{app_sop}}

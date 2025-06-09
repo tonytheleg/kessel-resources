@@ -1,0 +1,11 @@
+# This config file lists the required values to set in App Interface
+# It is used for testing changed in this repo only
+# Values should be updated to match your service and alerting desires
+service: <Name of the application service>
+env: <Env for alert (stage, prod, etc)>
+app_team: <App team name (correlates to Slack handle)>
+dashboard_link: <Link to RDS Dashboard in Grafana>
+console_link: <Link to App in Cluster Console>
+app_sop: <Link to App SOP in App Interface or Runbooks link>
+severity: <Alert severity (set on all alerts)>
+db_identifier: <Database instance identified>

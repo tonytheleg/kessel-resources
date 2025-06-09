@@ -1,0 +1,182 @@
+---
+$schema: /app-interface/prometheus-rule-test-1.yml
+
+rule_files:
+  - /TBD/PATH/TO/OUR/TEMPLATE/LOCATION
+
+evaluation_interval: 1m
+
+tests:
+# DebeziumConnectorDown
+- interval: 1m
+  input_series:
+  - series: kafka_connect_connector_status{connector="{{connector}}"}
+    values: 1x5 0x5 # service is up first 5 minutes, down after another 5
+
+  alert_rule_test:
+  # No alert in the first 5 mins
+  - eval_time: 5m
+    alertname: {{service}}_DebeziumConnectorDown
+    exp_alerts: []
+
+  # Alert after 10 min (5 min with 0)
+  - eval_time: 10m
+    alertname: {{service}}_DebeziumConnectorDown
+    exp_alerts:
+    - exp_labels:
+        severity: {{severity}}
+        service: {{service}}
+        connector: {{connector}}
+        namespace: {{namespace}}
+        env: {{env}}
+        app_team: {{app_team}}
+      exp_annotations:
+        dashboard: {{dashboard_link}}
+        link_url: {{connector_console_link}}
+        message: "{{service}} - Debezium source connector down for >3m"
+        runbook: {{app_sop}}
+
+# Kessel-Inventory-Consumer-Processing-Failures
+- interval: 1m
+  input_series:
+  - series: consumer_msg_process_failures_total{job="{{job_name}}"}
+    values: 0 1 2 3 4 30 50+50x10
+  - series: consumer_msgs_processed_total{job="{{job_name}}"}
+    values: 0 100 200 300 400 500 600+100x10
+
+  alert_rule_test:
+
+  # No alert in the first 5 minutes
+  - eval_time: 5m
+    alertname: {{service}}_ConsumerProcessingFailures
+    exp_alerts: []
+
+  # Alert after 15m
+  - eval_time: 15m
+    alertname: {{service}}_ConsumerProcessingFailures
+    exp_alerts:
+    - exp_labels:
+        severity: {{severity}}
+        service: {{service}}
+        env: {{env}}
+        app_team: {{app_team}}
+      exp_annotations:
+        dashboard: {{dashboard_link}}
+        link_url: {{app_console_link}}
+        message: "{{service}} consumer failure rate is above 10%"
+        runbook: {{app_sop}}
+
+# Kessel-Inventory-Consumer-Errors
+- interval: 1m
+  input_series:
+  - series: consumer_errors_total{job="{{job_name}}"}
+    values: 0 1 2 3 4 30 50+50x10
+
+  alert_rule_test:
+
+  # No alert in the first 5 minutes
+  - eval_time: 5m
+    alertname: {{service}}_ConsumerErrors
+    exp_alerts: []
+
+  # Alert after 15m
+  - eval_time: 15m
+    alertname: {{service}}_ConsumerErrors
+    exp_alerts:
+    - exp_labels:
+        severity: {{severity}}
+        service: {{service}}
+        env: {{env}}
+        app_team: {{app_team}}
+      exp_annotations:
+        dashboard: {{dashboard_link}}
+        link_url: {{app_console_link}}
+        message: "{{service}} high consumer error rate"
+        runbook: {{app_sop}}
+
+# Kessel-Inventory-Consumer-Kafka-Errors
+- interval: 1m
+  input_series:
+  - series: consumer_kafka_error_events_total{job="{{job_name}}"}
+    values: 0 1 2 3 4 30 50+50x10
+
+  alert_rule_test:
+
+  # No alert in the first 5 minutes
+  - eval_time: 5m
+    alertname: {{service}}_ConsumerKafkaErrors
+    exp_alerts: []
+
+  # Alert after 15m
+  - eval_time: 15m
+    alertname: {{service}}_ConsumerKafkaErrors
+    exp_alerts:
+    - exp_labels:
+        severity: {{severity}}
+        service: {{service}}
+        env: {{env}}
+        app_team: {{app_team}}
+      exp_annotations:
+        dashboard: {{dashboard_link}}
+        link_url: {{app_console_link}}
+        message: "{{service}} consumer high kafka error rate"
+        runbook: {{app_sop}}
+
+# InventoryConsumerLagHigh
+- interval: 1m
+  input_series:
+  - series: kafka_consumergroup_group_topic_sum_lag{topic="{{outbox_topic}}"}
+    values: 10+8x15
+
+  alert_rule_test:
+  # No alert in the first 5 mins
+  - eval_time: 5m
+    alertname: {{service}}_ConsumerLagHigh
+    exp_alerts: []
+
+  # Alert after 10 min (5 min with 0)
+  - eval_time: 10m
+    alertname: {{service}}_ConsumerLagHigh
+    exp_alerts:
+    - exp_labels:
+        severity: {{severity}}
+        service: {{service}}
+        topic: {{outbox_topic}}
+        namespace: {{namespace}}
+        env: {{env}}
+        app_team: {{app_team}}
+      exp_annotations:
+        dashboard: {{dashboard_link}}
+        link_url: {{app_console_link}}
+        message: "{{service}} consumer lag > 40 messages"
+        runbook: {{app_sop}}
+
+# ConsumerEndToEndLagHigh
+- interval: 1m
+  input_series:
+  - series: outbox_event_writes_total{job="{{job_name}}"}
+    values: 50+100x15
+  - series: consumer_msgs_processed_total{job="{{job_name}}"}
+    values: 50+50x15
+
+  alert_rule_test:
+  # No alert in the first 5 mins
+  - eval_time: 5m
+    alertname: {{service}}_ConsumerEndToEndLagHigh
+    exp_alerts: []
+
+  # Alert after 10 min (5 min with 0)
+  - eval_time: 10m
+    alertname: {{service}}_ConsumerEndToEndLagHigh
+    exp_alerts:
+    - exp_labels:
+        severity: {{severity}}
+        service: {{service}}
+        namespace: {{namespace}}
+        env: {{env}}
+        app_team: {{app_team}}
+      exp_annotations:
+        dashboard: {{dashboard_link}}
+        link_url: {{app_console_link}}
+        message: "{{service}} lag between outbox writes and consumer message processing is high"
+        runbook: {{app_sop}}
