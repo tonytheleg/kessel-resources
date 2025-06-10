@@ -14,6 +14,8 @@ with open(args.config_file, 'r') as file:
 with open(args.template_file, 'r') as file:
     template_data = file.read()
 
+template_data = template_data.replace("{{{", "{{")
+template_data = template_data.replace("}}}", "}}")
 template = Template(template_data)
 rendered = template.render(data)
 
