@@ -19,7 +19,7 @@ The provided Prometheus Rule templates are a good starting place to monitor your
   type: resource-template
   path: /TBD/PATH/TO/OUR/TEMPLATE/LOCATION
   variables:
-    service: kessel-inventory
+    service: kessel-inventory-api
     env: stage
     severity: medium
     app_team: ciam-authz
@@ -46,7 +46,7 @@ The provided Prometheus Rule templates are a good starting place to monitor your
   type: resource-template
   path: /TBD/PATH/TO/OUR/TEMPLATE/LOCATION
   variables:
-    service: kessel-inventory
+    service: kessel-inventory-api
     env: stage
     severity: medium
     app_team: ciam-authz

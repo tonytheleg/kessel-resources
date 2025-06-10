@@ -3,40 +3,40 @@ $schema: /openshift/prometheus-rule-1.yml
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: {{ service ~ '-' ~ env ~ '-' ~ 'consumer-rds-alerts' }}
+  name: {{{ service ~ '-' ~ env ~ '-' ~ 'consumer-rds-alerts' }}}
   labels:
     prometheus: app-sre
     role: alert-rules
 spec:
   groups:
-  - name: {{ service ~ '-' ~ env ~ '-' ~ 'consumer-rds-alerts' }}
+  - name: {{{ service ~ '-' ~ env ~ '-' ~ 'consumer-rds-alerts' }}}
     rules:
-    - alert: {{service}}_TransactionLogDiskSpaceUsageHigh
-      expr: aws_rds_transaction_logs_disk_usage_maximum{dbinstance_identifier="{{db_identifier}}"} >= 54000000000 # 54GB ~= 3 days idle WAL growth
+    - alert: {{{service}}}_TransactionLogDiskSpaceUsageHigh
+      expr: aws_rds_transaction_logs_disk_usage_maximum{dbinstance_identifier="{{{db_identifier}}}"} >= 54000000000 # 54GB ~= 3 days idle WAL growth
       for: 3m
       labels:
-        severity: {{severity}}
-        service: {{service}}
-        env: {{env}}
-        app_team: {{app_team}}
+        severity: {{{severity}}}
+        service: {{{service}}}
+        env: {{{env}}}
+        app_team: {{{app_team}}}
       annotations:
-        dashboard: {{dashboard_link}}
-        link_url: {{console_link}}
-        message: "{{service}}/{{db_identifier}} RDS - Transaction log disk usage is high, which could indicate unchecked WAL growth or replication slot issues"
-        runbook: {{app_sop}}
+        dashboard: {{{dashboard_link}}}
+        link_url: {{{console_link}}}
+        message: "{{{service}}}/{{{db_identifier}}} RDS - Transaction log disk usage is high, which could indicate unchecked WAL growth or replication slot issues"
+        runbook: {{{app_sop}}}
 
-    - alert: {{service}}_ReplicationSlotLagOrUsageAnomaly
-      expr: delta(aws_rds_transaction_logs_disk_usage_maximum{dbinstance_identifier="{{db_identifier}}"}[60m]) >= 700000000
+    - alert: {{{service}}}_ReplicationSlotLagOrUsageAnomaly
+      expr: delta(aws_rds_transaction_logs_disk_usage_maximum{dbinstance_identifier="{{{db_identifier}}}"}[60m]) >= 700000000
             or
-            delta(aws_rds_oldest_replication_slot_lag_maximum{dbinstance_identifier="{{db_identifier}}"}[60m]) >= 700000000 # 0.7GB per hour
+            delta(aws_rds_oldest_replication_slot_lag_maximum{dbinstance_identifier="{{{db_identifier}}}"}[60m]) >= 700000000 # 0.7GB per hour
       for: 5m
       labels:
-        severity: {{severity}}
-        service: {{service}}
-        env: {{env}}
-        app_team: {{app_team}}
+        severity: {{{severity}}}
+        service: {{{service}}}
+        env: {{{env}}}
+        app_team: {{{app_team}}}
       annotations:
-        dashboard: {{dashboard_link}}
-        link_url: {{console_link}}
-        message: "{{service}}/{{db_identifier}} RDS - Replication Slot Lag and/or Transaction Log Disk usage has grown at an abnormal rate"
-        runbook: {{app_sop}}
+        dashboard: {{{dashboard_link}}}
+        link_url: {{{console_link}}}
+        message: "{{{service}}}/{{{db_identifier}}} RDS - Replication Slot Lag and/or Transaction Log Disk usage has grown at an abnormal rate"
+        runbook: {{{app_sop}}}

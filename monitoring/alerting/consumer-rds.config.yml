@@ -1,7 +1,7 @@
 # This config file lists the required values to set in App Interface
 # It is used for testing changed in this repo only
 # Values should be updated to match your service and alerting desires
-service: <Name of the application service>
+service: <Name of the application service - must match alertingService name in App Interface>
 env: <Env for alert (stage, prod, etc)>
 app_team: <App team name (correlates to Slack handle)>
 dashboard_link: <Link to RDS Dashboard in Grafana>
